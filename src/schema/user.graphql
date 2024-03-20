@@ -1,0 +1,5 @@
+type User @entity {
+  id: ID!
+  # liquidityPositions: [LiquidityPosition!] @derivedFrom(field: "user")
+  totalSwappedVolumeUSD: BigDecimal!
+}

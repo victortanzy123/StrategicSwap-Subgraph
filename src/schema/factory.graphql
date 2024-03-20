@@ -1,0 +1,15 @@
+type StrategicSwapFactory @entity {
+  # factory address
+  id: ID!
+  # pair info
+  pairCount: Int!
+
+  # total volume
+  totalVolumeUSD: BigDecimal!
+
+  # total fees
+  totalFeeUSD: BigDecimal!
+
+  # total liquidity
+  totalLiquidityUSD: BigDecimal!
+}

@@ -1,0 +1,59 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+features:
+  - ipfsOnEthereumContracts
+dataSources:
+  - kind: ethereum/contract
+    name: Factory
+    network: "{{network}}"
+    source:
+      address: "{{StrategicSwapFactory_Address}}"
+      startBlock: 5138095
+      abi: StrategicPoolFactory
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Pair
+        - Token
+      abis:
+        - name: StrategicPoolFactory
+          file: ./abis/StrategicPoolFactory.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: PairCreated(indexed address,indexed address,address,address,bool,address,uint256)
+          handler: handleNewPair
+      file: ./src/mappings/factory.ts
+templates:
+  - kind: ethereum/contract
+    name: StrategicPoolPairERC4626
+    network: "{{network}}"
+    source:
+      abi: StrategicPoolPairERC4626
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/main.ts
+      entities:
+        - Pair
+        - Token
+      abis:
+        - name: StrategicPoolFactory
+          file: ./abis/StrategicPoolFactory.json
+        - name: StrategicPoolPairERC4626
+          file: ./abis/StrategicPoolPairERC4626.json
+      eventHandlers:
+        - event: DepositLiquidity(indexed address,uint256,uint256,uint256)
+          handler: handleDepositLiquidity
+        - event: RemoveLiquidity(indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleRemoveLiquidity
+        - event: Swap(indexed address,uint256,uint256,uint256,uint256,indexed address)
+          handler: handleSwap
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Sync(uint112,uint112)
+          handler: handleSync

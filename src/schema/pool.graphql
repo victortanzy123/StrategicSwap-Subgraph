@@ -1,0 +1,63 @@
+type Pair @entity {
+  # pair address
+  id: ID!
+  isStable: Boolean
+
+  # From factory
+  token0: Token!
+  vault0: String! # ERC4626 Vault address of token0
+  token1: Token!
+  vault1: String! # ERC4626 Vault address of token1
+  reserve0: BigDecimal!
+  reserve1: BigDecimal!
+  totalSupply: BigDecimal!
+  token0Fee: BigInt!
+  token1Fee: BigInt!
+  token0FeePercent: BigDecimal!
+  token1FeePercent: BigDecimal!
+
+  # Total volume statistics
+  volumeToken0: BigDecimal!
+  volumeToken1: BigDecimal!
+
+  # Total fee generated
+  totalFeeGenerated: BigDecimal!
+
+  # creation stats
+  createdAtTimestamp: BigInt!
+  createdAtBlockNumber: BigInt!
+
+  # Liquidity Provision
+  liquidityPositions: [LiquidityPosition!]!
+}
+
+type LiquidityPosition @entity {
+  id: ID!
+  user: User!
+  pair: Pair!
+  lpTokenBalance: BigDecimal!
+}
+
+enum TransactionType {
+  MINT
+  BURN
+  SWAP
+}
+
+type Transaction @entity {
+  # transaction hash + "-" + index in swaps Transaction array
+  id: ID!
+  type: TransactionType!
+  timestamp: BigInt!
+  pair: Pair!
+
+  from: String!
+  to: String!
+  amount0In: BigDecimal!
+  amount1In: BigDecimal!
+  amount0Out: BigDecimal!
+  amount1Out: BigDecimal!
+
+  # estimated Amount
+  amountUSD: BigDecimal!
+}
